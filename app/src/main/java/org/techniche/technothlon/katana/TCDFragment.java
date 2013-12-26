@@ -86,7 +86,7 @@ public class TCDFragment extends Fragment implements AbsListView.OnItemClickList
         if (null != mListener) {
             // Notify the active callbacks interface (the activity, if the
             // fragment is attached to one) that an item has been selected.
-            mListener.onTCDInteraction(TCDContent.ITEMS.get(position).id);
+            mListener.onTCDInteraction(position);
         }
     }
 
@@ -129,7 +129,7 @@ public class TCDFragment extends Fragment implements AbsListView.OnItemClickList
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnTCDInteractionListener {
-        public void onTCDInteraction(String id);
+        public void onTCDInteraction(int id);
     }
 
 }

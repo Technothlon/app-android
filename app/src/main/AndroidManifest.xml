@@ -27,6 +27,11 @@
             android:launchMode="singleTask"
             android:taskAffinity="" >
         </activity>
+        <activity
+            android:name="org.techniche.technothlon.katana.TCDSingleViewer"
+            android:parentActivityName=".MainActivity"
+            android:label="@string/title_activity_tcdsingle_viewer" >
+        </activity>
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />

@@ -65,7 +65,7 @@ public class TCDListAdapter extends ArrayAdapter<TCDContent.TCDQuestionMini> {
             holder.title.setText(question.title);
             holder.question.setText(question.question);
             holder.status.setText(question.getStatus());
-            holder.id.setBackgroundResource(getBackground(question.color));
+            holder.id.setBackgroundResource(question.color);
         }
 
 
@@ -78,17 +78,5 @@ public class TCDListAdapter extends ArrayAdapter<TCDContent.TCDQuestionMini> {
         convertView.startAnimation(animation);
 
         return convertView;
-    }
-
-    private int getBackground(int color) {
-        switch (color) {
-            case 10:
-            case 20:
-            case 30:
-            case 40:
-            case 50:
-            default:
-                return R.drawable.tcd_background_1;
-        }
     }
 }

@@ -2,6 +2,7 @@ package org.techniche.technothlon.katana;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -107,8 +108,12 @@ public class MainActivity extends ActionBarActivity
     }
 
     @Override
-    public void onTCDInteraction(String id) {
-
+    public void onTCDInteraction(int id) {
+        Intent intent = new Intent(this, TCDSingleViewer.class);
+        Bundle bundle = new Bundle();
+        bundle.putInt("open", id);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
     @Override

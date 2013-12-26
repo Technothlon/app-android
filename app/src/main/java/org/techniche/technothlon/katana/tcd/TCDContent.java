@@ -165,13 +165,14 @@ public class TCDContent {
         TCDDatabase helper = new TCDDatabase(context);
         SQLiteDatabase db = helper.getReadableDatabase();
         assert db != null;
-        Cursor c = db.rawQuery("SELECT * FROM " + TCDDatabase.Contracts.NAME + " ORDER BY " + TCDDatabase.Contracts.FIELD_TIME + " DESC", null);
+        Cursor c = db.rawQuery("SELECT * FROM " + TCDDatabase.Contracts.NAME + " ORDER BY " + TCDDatabase.Contracts.FIELD_TIME + " DESC, "+TCDDatabase.Contracts.FIELD_ID+ " DESC", null);
         Log.d("DB", c.getCount() + " object in database");
         c.moveToFirst();
         while (!c.isAfterLast()) {
             addItem(new TCDQuestion(
                     c.getString(c.getColumnIndex(TCDDatabase.Contracts.FIELD_ID)),
                     c.getString(c.getColumnIndex(TCDDatabase.Contracts.FIELD_DISPLAY_ID)),
+                    c.getInt(c.getColumnIndex(TCDDatabase.Contracts.FIELD_COLOR)),
                     c.getString(c.getColumnIndex(TCDDatabase.Contracts.FIELD_TITLE)),
                     c.getString(c.getColumnIndex(TCDDatabase.Contracts.FIELD_QUESTION)),
                     c.getString(c.getColumnIndex(TCDDatabase.Contracts.FIELD_FACEBOOK)),
@@ -232,13 +233,13 @@ public class TCDContent {
         public String title;
         public java.util.Date date = null;
         public String dateString = "";
-        public int color = 1;
+        public int color = R.drawable.tcd_background_1;
         public String uniqueId;
         private String status;
         private boolean ret = false;
 
 
-        public TCDQuestion(String uniqueId, String id, String title, String question, String facebook, String google, String tumblr,
+        public TCDQuestion(String uniqueId, String id, int color, String title, String question, String facebook, String google, String tumblr,
                            String answer_url, String by, String answer, String status) {
 
             this.uniqueId = uniqueId;
@@ -250,6 +251,7 @@ public class TCDContent {
             this.tumblr = tumblr;
             this.answer_url = answer_url;
             this.by = by;
+            this.color = getBackground(color);
             this.answer = answer;
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             try {
@@ -260,6 +262,22 @@ public class TCDContent {
             assert this.date != null;
             this.dateString = sdf.format(this.date);
             this.status = getStatus();
+        }
+        private int getBackground(int color) {
+            switch (color) {
+                case 10:
+                    return R.drawable.tcd_background_2;
+                case 20:
+                    return R.drawable.tcd_background_3;
+                case 30:
+                    return R.drawable.tcd_background_4;
+                case 40:
+                    return R.drawable.tcd_background_5;
+                case 50:
+                    return R.drawable.tcd_background_6;
+                default:
+                    return R.drawable.tcd_background_1;
+            }
         }
 
         public String getStatus() {

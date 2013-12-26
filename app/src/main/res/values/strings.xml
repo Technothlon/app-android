@@ -14,5 +14,9 @@
     <string name="preference_file_key">katana_private</string>
     <string name="tcd_fetch_id">technocoupdoeil_last_fetch_id</string>
     <string name="title_activity_tcdsingle_viewer">Techno Coup D\'œil</string>
+    <string name="str_action_facebook">Read on Facebook</string>
+    <string name="str_action_google">Read on Google+</string>
+    <string name="str_action_tumblr">Read on Tumblr</string>
+    <string name="str_action_disqus">Discuss Answer</string>
 
 </resources>
