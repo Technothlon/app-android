@@ -1,19 +1,24 @@
 package org.techniche.technothlon.katana;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.ShareActionProvider;
 import android.view.*;
 import android.widget.TextView;
+import android.widget.Toast;
 import org.techniche.technothlon.katana.tcd.TCDContent;
 
 import java.util.Locale;
 
 public class TCDSingleViewer extends ActionBarActivity implements ViewPager.OnPageChangeListener {
     private static int pages;
+    private ShareActionProvider mShareActionProvider;
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -51,7 +56,28 @@ public class TCDSingleViewer extends ActionBarActivity implements ViewPager.OnPa
         
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.tcdsingle_viewer, menu);
-        return true;
+
+        MenuItem item = menu.findItem(R.id.action_share);
+        mShareActionProvider = (ShareActionProvider)
+                MenuItemCompat.getActionProvider(item);
+        mShareActionProvider.setShareIntent(getDefaultIntent());
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    private Intent getDefaultIntent() {
+        Toast.makeText(getApplicationContext(), "Creating Intent with "+activePage, Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        TCDContent.TCDQuestion q = TCDContent.ITEM_MAP.get(TCDContent.ITEMS.get(this.activePage).id);
+        if (q != null)
+        {
+            intent.putExtra(Intent.EXTRA_SUBJECT, "Techno Coup D'œil #" + q.id + " - " + q.title);
+            intent.putExtra(Intent.EXTRA_TITLE, "Techno Coup D'œil #" + q.id + " - " + q.title);
+//            intent.putExtra(Intent.EXTRA_TEXT, "Hey! Check out this. " + q.facebook + "\nFollow Technothlon for more.");
+            intent.putExtra(Intent.EXTRA_TEXT, "Hey! Check out this Technothlon's question.\n" + q.question);
+            intent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, R.drawable.ic_launcher);
+        }
+        intent.setType("text/*");
+        return intent;
     }
 
     @Override
@@ -59,11 +85,11 @@ public class TCDSingleViewer extends ActionBarActivity implements ViewPager.OnPa
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
+        switch (item.getItemId()){
+            case R.id.action_settings: return true;
+            case R.id.action_share: mShareActionProvider.setShareIntent(getDefaultIntent()); return false;
+            default: return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
