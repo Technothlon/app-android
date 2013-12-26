@@ -2,4 +2,12 @@
 <resources>
     <color name="techno_blue">#003442</color>
     <color name="techno_red">#d03100</color>
+
+    <color name="white">#ffffff</color>
+
+    <color name="tcd_color_id_text">#ffffff</color>
+    <color name="tcd_color_title_text">#003442</color>
+    <color name="tcd_color_content_text">#000000</color>
+    <color name="tcd_color_status_text">#aaa</color>
+
 </resources>

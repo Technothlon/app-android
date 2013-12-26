@@ -3,22 +3,18 @@ package org.techniche.technothlon.katana;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
+import android.widget.TextView;
 import org.techniche.technothlon.katana.tcd.TCDContent;
+import org.techniche.technothlon.katana.tcd.TCDListAdapter;
 
-/**
- * A fragment representing a list of Items.
- * <p/>
- * Large screen devices (such as tablets) are supported by replacing the ListView
- * with a GridView.
- * <p/>
- * Activities containing this fragment MUST implement the {@link Callbacks}
- * interface.
- */
-public class TCDFragment extends Fragment implements AbsListView.OnItemClickListener {
+
+public class TCDFragment extends Fragment implements AbsListView.OnItemClickListener, AbsListView.OnScrollListener {
 
     private static final String ARG_SECTION_NUMBER = "section_number";
     private OnTCDInteractionListener mListener;
@@ -30,7 +26,8 @@ public class TCDFragment extends Fragment implements AbsListView.OnItemClickList
      * The Adapter which will be used to populate the ListView/GridView with
      * Views.
      */
-    private ListAdapter mAdapter;
+    public TCDListAdapter mAdapter;
+    private int mLastFirstVisibleItem = -1;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -42,8 +39,7 @@ public class TCDFragment extends Fragment implements AbsListView.OnItemClickList
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mAdapter = new ArrayAdapter<TCDContent.TCDQuestion>(getActivity(),
-                android.R.layout.simple_list_item_1, android.R.id.text1, TCDContent.ITEMS);
+        mAdapter = new TCDListAdapter(getActivity(), R.layout.item_list_single);
     }
 
     @Override
@@ -51,12 +47,17 @@ public class TCDFragment extends Fragment implements AbsListView.OnItemClickList
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_item, container, false);
 
+        Log.d("TCD", TCDContent.ITEMS.size() + " objects in it");
+
         // Set the adapter
+        assert view != null;
         mListView = (AbsListView) view.findViewById(android.R.id.list);
-        ((AdapterView<ListAdapter>) mListView).setAdapter(mAdapter);
+        assert mListView != null;
+        mListView.setAdapter((mAdapter));
 
         // Set OnItemClickListener so we can be notified on item clicks
         mListView.setOnItemClickListener(this);
+        mListView.setOnScrollListener(this);
 
         return view;
     }
@@ -98,8 +99,23 @@ public class TCDFragment extends Fragment implements AbsListView.OnItemClickList
         View emptyView = mListView.getEmptyView();
 
         if (emptyText instanceof TextView) {
+            assert emptyView != null;
             ((TextView) emptyView).setText(emptyText);
         }
+    }
+
+    @Override
+    public void onScrollStateChanged(AbsListView view, int scrollState) {
+    }
+
+    @Override
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
+
+        if (firstVisibleItem > mLastFirstVisibleItem) TCDListAdapter.direction = TCDListAdapter.DOWN;
+        else if (firstVisibleItem < mLastFirstVisibleItem) TCDListAdapter.direction = TCDListAdapter.UP;
+        else TCDListAdapter.direction = TCDListAdapter.NONE;
+        TCDListAdapter.firstVisible = mLastFirstVisibleItem = firstVisibleItem;
     }
 
     /**
@@ -117,3 +133,5 @@ public class TCDFragment extends Fragment implements AbsListView.OnItemClickList
     }
 
 }
+
+//TODO - Support photos & videos in Techno Coup D'oœil

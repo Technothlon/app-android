@@ -18,9 +18,7 @@ public class TechnopediaContent {
      */
     public static List<TechnopediaItem> ITEMS = new ArrayList<TechnopediaItem>();
 
-    /**
-     * A map of sample (dummy) items, by ID.
-     */
+
     public static Map<String, TechnopediaItem> ITEM_MAP = new HashMap<String, TechnopediaItem>();
 
     static {

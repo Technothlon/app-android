@@ -8,6 +8,9 @@ import android.view.KeyEvent;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import org.techniche.technothlon.katana.tcd.TCDContent;
+
+import java.util.Date;
 
 public class SplashScreen extends Activity {
 
@@ -23,35 +26,48 @@ public class SplashScreen extends Activity {
                 tag = (ImageView) findViewById(R.id.logo_tag);
 
         Animation anim = AnimationUtils.loadAnimation(this, R.anim.anim_fly_in_top);
+        assert anim != null;
         head.startAnimation(anim);
 
         anim = AnimationUtils.loadAnimation(this, R.anim.anim_fly_in_left);
+        assert anim != null;
         text.startAnimation(anim);
 
         anim = AnimationUtils.loadAnimation(this, R.anim.anim_fly_in_right);
+        assert anim != null;
         tag.startAnimation(anim);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        (new AsyncTask<Object, Object, Object>() {
+        final long timeStart = (new Date()).getTime();
+        (new TCDContent.TCDLoader() {
             @Override
-            protected Object doInBackground(Object... params) {
-                try {
-                    Thread.sleep(5000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                return null;
-            }
+            public void finished() {
+                long timeEnd = (new Date()).getTime();
+                long timeTaken = Math.abs(timeEnd - timeStart);
+                if(timeTaken < 4000) {
+                    (new AsyncTask<Object, Integer, String>(){
+                        @Override
+                        protected String doInBackground(Object... params) {
+                            try {
+                                Thread.sleep((Long) params[0], 0);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            return null;
+                        }
 
-            @Override
-            protected void onPostExecute(Object o) {
-                super.onPostExecute(o);
-                SplashScreen.this.proceed();
+                        @Override
+                        protected void onPostExecute(String s) {
+                            super.onPostExecute(s);
+                            proceed();
+                        }
+                    }).execute(4000 - timeTaken);
+                }
             }
-        }).execute();
+        }).execute(getApplicationContext());
     }
 
     private void proceed() {

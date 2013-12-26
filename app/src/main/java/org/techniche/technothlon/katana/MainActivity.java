@@ -1,6 +1,7 @@
 package org.techniche.technothlon.katana;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -9,10 +10,13 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.view.*;
 import android.widget.TextView;
+import android.widget.Toast;
+import org.techniche.technothlon.katana.tcd.TCDContent;
 
 public class MainActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks, TCDFragment.OnTCDInteractionListener, TechnopediaFragment.OnTechnopediaInteractionListener {
 
+    public static Context context;
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
@@ -25,6 +29,7 @@ public class MainActivity extends ActionBarActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        context = getApplicationContext();
         setContentView(R.layout.activity_main);
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
@@ -88,6 +93,15 @@ public class MainActivity extends ActionBarActivity
         int id = item.getItemId();
         if (id == R.id.action_settings) {
             return true;
+        } else if (id == R.id.action_example) {
+            TCDContent.TCDLoader loader = new TCDContent.TCDLoader() {
+                @Override
+                public void finished() {
+
+                }
+            };
+            loader.execute(MainActivity.context.getApplicationContext());
+            Toast.makeText(this, "Syncing", Toast.LENGTH_SHORT).show();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -122,10 +136,10 @@ public class MainActivity extends ActionBarActivity
         public static Fragment newInstance(int sectionNumber) {
             Fragment fragment;
             switch (sectionNumber) {
-                case 2:
+                case 3:
                     fragment = new TCDFragment();
                     break;
-                case 3:
+                case 2:
                     fragment = new TechnopediaFragment();
                     break;
                 default:
