@@ -3,7 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Technothlon.iml" filepath="$PROJECT_DIR$/Technothlon.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/katana/katana.iml" filepath="$PROJECT_DIR$/katana/katana.iml" />
+      <module fileurl="file://$PROJECT_DIR$/technothlon-android-app.iml" filepath="$PROJECT_DIR$/technothlon-android-app.iml" />
     </modules>
   </component>
 </project>

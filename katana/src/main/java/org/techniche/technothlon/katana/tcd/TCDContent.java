@@ -289,6 +289,7 @@ public class TCDContent {
             } catch (ParseException e) {
                 e.printStackTrace();
             }
+            sdf = new SimpleDateFormat("yyyy-MM-dd");
             assert this.date != null;
             this.dateString = sdf.format(this.date);
             this.status = getStatus();
@@ -313,11 +314,8 @@ public class TCDContent {
 
         public String getStatus() {
             if (ret) return status;
-            long seconds = ((new Date()).getTime() - date.getTime()) / 1000;
-            if (seconds < 0) {
-                ret = true;
-                status = dateString;
-            } else if (seconds < 60) status = "about " + seconds + " seconds ago";
+            long seconds = Math.abs(((new Date()).getTime() - date.getTime()) / 1000);
+            if (seconds < 60) status = "about " + seconds + " seconds ago";
             else if (seconds < 3600) status = "about " + (seconds / 60) + " minutes ago";
             else if (seconds < 86400) status = "about " + (seconds / 3600) + " hours ago";
             else if (seconds < 172800) status = "yesterday";

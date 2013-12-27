@@ -9,5 +9,6 @@
     <color name="tcd_color_title_text">#003442</color>
     <color name="tcd_color_content_text">#000000</color>
     <color name="tcd_color_status_text">#aaa</color>
+    <color name="tcd_color_card_text">#444</color>
 
 </resources>
