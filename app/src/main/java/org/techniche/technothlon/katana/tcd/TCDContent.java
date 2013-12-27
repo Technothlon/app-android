@@ -41,7 +41,8 @@ public class TCDContent {
     public static Map<String, TCDQuestion> ITEM_MAP = new HashMap<String, TCDQuestion>();
     private static String url = "http://localhost/technothlon/technocoupdoeil_app_gateway/android/?technocoupdoeil=fjalkfq2045rudacnavsofu0aswd988q29ra&lastFetchId=";
 
-    private static void download(Context context) {
+    private static int download(Context context) {
+
         SharedPreferences sharedPref = context.getSharedPreferences(
                 context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         long lastFetchID = sharedPref.getLong(context.getString(R.string.tcd_fetch_id), 0);
@@ -92,26 +93,52 @@ public class TCDContent {
                     edit.commit();
                     download(context);
                 }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else {
-            try {
                 final Context ct = context;
                 new Thread() {
                     @Override
                     public void run() {
                         Looper.prepare();
-                        Toast.makeText(ct, "No network connection available.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ct, "Sync Completed.", Toast.LENGTH_SHORT).show();
                         Looper.loop();
                     }
                 }.start();
-            } catch (Exception e) {
-                // TODO: handle exception
+                return 0;
+            } catch (JSONException e) {
                 e.printStackTrace();
+                final Context ct = context;
+                new Thread() {
+                    @Override
+                    public void run() {
+                        Looper.prepare();
+                        Toast.makeText(ct, "Sync Failed.", Toast.LENGTH_SHORT).show();
+                        Looper.loop();
+                    }
+                }.start();
+                return 3;
+            } catch (IOException e) {
+                e.printStackTrace();
+                final Context ct = context;
+                new Thread() {
+                    @Override
+                    public void run() {
+                        Looper.prepare();
+                        Toast.makeText(ct, "Sync Failed.", Toast.LENGTH_SHORT).show();
+                        Looper.loop();
+                    }
+                }.start();
+                return 2;
             }
+        } else {
+            final Context ct = context;
+            new Thread() {
+                @Override
+                public void run() {
+                    Looper.prepare();
+                    Toast.makeText(ct, "No network connection available.", Toast.LENGTH_SHORT).show();
+                    Looper.loop();
+                }
+            }.start();
+            return 1;
         }
     }
 
@@ -162,10 +189,11 @@ public class TCDContent {
     }
 
     public static void load(Context context) {
+        boolean update = ITEMS.isEmpty() ? false : true;
         TCDDatabase helper = new TCDDatabase(context);
         SQLiteDatabase db = helper.getReadableDatabase();
         assert db != null;
-        Cursor c = db.rawQuery("SELECT * FROM " + TCDDatabase.Contracts.NAME + " ORDER BY " + TCDDatabase.Contracts.FIELD_TIME + " DESC, "+TCDDatabase.Contracts.FIELD_ID+ " DESC", null);
+        Cursor c = db.rawQuery("SELECT * FROM " + TCDDatabase.Contracts.NAME + " ORDER BY " + TCDDatabase.Contracts.FIELD_TIME + " DESC, " + TCDDatabase.Contracts.FIELD_ID + " DESC", null);
         Log.d("DB", c.getCount() + " object in database");
         c.moveToFirst();
         while (!c.isAfterLast()) {
@@ -182,40 +210,42 @@ public class TCDContent {
                     c.getString(c.getColumnIndex(TCDDatabase.Contracts.FIELD_BY)),
                     c.getString(c.getColumnIndex(TCDDatabase.Contracts.FIELD_ANSWER)),
                     c.getString(c.getColumnIndex(TCDDatabase.Contracts.FIELD_TIME))
-            ));
+            ), update);
             c.moveToNext();
         }
         c.close();
         db.close();
     }
 
-    private static void addItem(TCDQuestion item) {
+    private static void addItem(TCDQuestion item, boolean update) {
         if (!ITEM_MAP.containsKey(item.uniqueId)) {
-            ITEMS.add((new TCDQuestionMini(item.uniqueId)));
+            if (update) ITEMS.add(0, (new TCDQuestionMini(item.uniqueId)));
+            else ITEMS.add((new TCDQuestionMini(item.uniqueId)));
             ITEM_MAP.put(item.uniqueId, item);
         }
     }
 
-    public abstract static class TCDLoader extends AsyncTask<Object, Integer, String> {
+    public abstract static class TCDLoader extends AsyncTask<Object, Integer, Integer> {
 
         @Override
-        protected String doInBackground(Object[] params) {
+        protected Integer doInBackground(Object[] params) {
+            int d = 4;
             try {
-                download((Context) params[0]);
+                d = download((Context) params[0]);
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
                 load((Context) params[0]);
             }
-            return "";
+            return d;
         }
 
         @Override
-        protected void onPostExecute(String o) {
-            finished();
+        protected void onPostExecute(Integer o) {
+            finished(o);
         }
 
-        public abstract void finished();
+        public abstract void finished(int result);
     }
 
     /**
@@ -263,6 +293,7 @@ public class TCDContent {
             this.dateString = sdf.format(this.date);
             this.status = getStatus();
         }
+
         private int getBackground(int color) {
             switch (color) {
                 case 10:
@@ -283,7 +314,10 @@ public class TCDContent {
         public String getStatus() {
             if (ret) return status;
             long seconds = ((new Date()).getTime() - date.getTime()) / 1000;
-            if (seconds < 60) status = "about " + seconds + " seconds ago";
+            if (seconds < 0) {
+                ret = true;
+                status = dateString;
+            } else if (seconds < 60) status = "about " + seconds + " seconds ago";
             else if (seconds < 3600) status = "about " + (seconds / 60) + " minutes ago";
             else if (seconds < 86400) status = "about " + (seconds / 3600) + " hours ago";
             else if (seconds < 172800) status = "yesterday";

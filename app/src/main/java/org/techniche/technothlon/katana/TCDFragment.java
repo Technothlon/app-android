@@ -75,6 +75,10 @@ public class TCDFragment extends Fragment implements AbsListView.OnItemClickList
         }
     }
 
+    public void update(){
+        mAdapter.notifyDataSetChanged();
+    }
+
     @Override
     public void onDetach() {
         super.onDetach();

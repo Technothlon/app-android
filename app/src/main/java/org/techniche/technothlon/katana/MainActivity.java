@@ -11,7 +11,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.view.*;
 import android.widget.TextView;
-import android.widget.Toast;
 import org.techniche.technothlon.katana.tcd.TCDContent;
 
 public class MainActivity extends ActionBarActivity
@@ -26,6 +25,7 @@ public class MainActivity extends ActionBarActivity
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
     private CharSequence mTitle;
+    private boolean syncingTCD = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,14 +95,24 @@ public class MainActivity extends ActionBarActivity
         if (id == R.id.action_settings) {
             return true;
         } else if (id == R.id.action_example) {
-            TCDContent.TCDLoader loader = new TCDContent.TCDLoader() {
-                @Override
-                public void finished() {
+            final Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.container);
+            if (fragment instanceof TCDFragment) {
+                final TCDFragment frag = (TCDFragment) fragment;
+                if (!syncingTCD) {
+                    syncingTCD = true;
+                    TCDContent.TCDLoader loader = new TCDContent.TCDLoader() {
+                        @Override
+                        public void finished(int result) {
+                            if (result == 0) {
+                                frag.update();
+                                syncingTCD = false;
+                            }
+                        }
+                    };
 
+                    loader.execute(MainActivity.context.getApplicationContext());
                 }
-            };
-            loader.execute(MainActivity.context.getApplicationContext());
-            Toast.makeText(this, "Syncing", Toast.LENGTH_SHORT).show();
+            }
         }
         return super.onOptionsItemSelected(item);
     }

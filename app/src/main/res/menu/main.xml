@@ -4,7 +4,8 @@
     tools:context="org.techniche.technothlon.katana.MainActivity" >
     <item android:id="@+id/action_example"
         android:title="@string/action_sync"
-        app:showAsAction="withText|ifRoom" />
+        android:icon="@android:drawable/ic_popup_sync"
+        app:showAsAction="ifRoom" />
     <item android:id="@+id/action_settings"
         android:title="@string/action_settings"
         android:orderInCategory="100"

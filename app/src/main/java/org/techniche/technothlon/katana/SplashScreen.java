@@ -44,7 +44,7 @@ public class SplashScreen extends Activity {
         final long timeStart = (new Date()).getTime();
         (new TCDContent.TCDLoader() {
             @Override
-            public void finished() {
+            public void finished(int result) {
                 long timeEnd = (new Date()).getTime();
                 long timeTaken = Math.abs(timeEnd - timeStart);
                 if(timeTaken < 4000) {
