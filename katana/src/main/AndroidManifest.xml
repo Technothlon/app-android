@@ -29,9 +29,24 @@
         </activity>
         <activity
             android:name="org.techniche.technothlon.katana.TCDSingleViewer"
-            android:parentActivityName=".MainActivity"
-            android:label="@string/title_activity_tcdsingle_viewer" >
+            android:label="@string/title_activity_tcdsingle_viewer"
+            android:parentActivityName="org.techniche.technothlon.katana.MainActivity" >
         </activity>
+        <activity
+            android:name="org.techniche.technothlon.katana.LoginActivity"
+            android:label="@string/title_activity_login"
+            android:windowSoftInputMode="adjustResize|stateVisible" >
+        </activity>
+
+        <service
+            android:name="org.techniche.technothlon.katana.account.AuthenticatorService"
+            android:enabled="false"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="android.accounts.AccountAuthenticator" />
+            </intent-filter>
+            <meta-data android:name="android.accounts.AccountAuthenticator" android:resource="@xml/authenticator" />
+        </service>
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />

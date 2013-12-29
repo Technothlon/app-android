@@ -8,9 +8,6 @@ import android.view.KeyEvent;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
-import org.techniche.technothlon.katana.tcd.TCDContent;
-
-import java.util.Date;
 
 public class SplashScreen extends Activity {
 
@@ -41,33 +38,23 @@ public class SplashScreen extends Activity {
     @Override
     protected void onStart() {
         super.onStart();
-        final long timeStart = (new Date()).getTime();
-        (new TCDContent.TCDLoader() {
+        (new AsyncTask<Object, Integer, String>(){
             @Override
-            public void finished(int result) {
-                long timeEnd = (new Date()).getTime();
-                long timeTaken = Math.abs(timeEnd - timeStart);
-                if(timeTaken < 4000) {
-                    (new AsyncTask<Object, Integer, String>(){
-                        @Override
-                        protected String doInBackground(Object... params) {
-                            try {
-                                Thread.sleep((Long) params[0], 0);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                            return null;
-                        }
-
-                        @Override
-                        protected void onPostExecute(String s) {
-                            super.onPostExecute(s);
-                            proceed();
-                        }
-                    }).execute(4000 - timeTaken);
+            protected String doInBackground(Object... params) {
+                try {
+                    Thread.sleep(4000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
+                return null;
             }
-        }).execute(getApplicationContext());
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                proceed();
+            }
+        }).execute();
     }
 
     private void proceed() {

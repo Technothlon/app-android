@@ -19,5 +19,6 @@
     <string name="str_action_tumblr">Read on Tumblr</string>
     <string name="str_action_disqus">Discuss Answer</string>
     <string name="str_action_share">Share</string>
+    <string name="pref_sync_title">Techno Coup D\'œil Questions</string>
 
 </resources>
